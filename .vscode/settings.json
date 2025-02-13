@@ -1,0 +1,14 @@
+{
+    "sqltools.connections": [
+        {
+            "previewLimit": 50,
+            "server": "localhost",
+            "port": 5432,
+            "driver": "PostgreSQL",
+            "database": "credenzdata",
+            "name": "mydbconnection",
+            "username": "postgres",
+            "password": "varsha346"
+        }
+    ]
+}
