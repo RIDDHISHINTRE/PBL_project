@@ -2,6 +2,87 @@ const jwt = require('jsonwebtoken');
 const Student = require('../models/studentModel');
 const Alumni = require('../models/alumniModel');
 require('dotenv').config();
+const express = require('express');
+// const crypto = require('crypto');
+// const bcrypt = require('bcrypt');
+// const nodemailer = require('nodemailer');
+
+// const { Op } = require('sequelize');
+
+
+// const transporter = nodemailer.createTransport({
+//     service: 'gmail',
+//     auth: {
+//         user: process.env.EMAIL_USER, // Store in .env
+//         pass: process.env.EMAIL_PASS 
+//     }
+// });
+
+// const forgot = async (req, res) => {
+//     const { email } = req.body;
+
+//     try {
+//         const user = await Student.findOne({ where: { email } });
+//         if (!user) {
+//             return res.status(404).json({ message: 'User not found' });
+//         }
+
+//         // Generate reset token & store its hashed version
+//         const resetToken = crypto.randomBytes(20).toString('hex');
+//         const hashedToken = crypto.createHash('sha256').update(resetToken).digest('hex');
+//         const resetTokenExpiry = new Date(Date.now() + 3600000); // 1 hour expiry
+
+//         await user.update({ resetToken: hashedToken, resetTokenExpiry });
+
+//         // Send the email
+//         const resetLink = `http://localhost:3000/reset-password?token=${resetToken}`;
+//         const mailOptions = {
+//             from: process.env.EMAIL_USER,
+//             to: email,
+//             subject: 'Password Reset',
+//             text: `Click here to reset your password: ${resetLink}`
+//         };
+
+//         await transporter.sendMail(mailOptions);
+//         res.json({ message: 'Password reset email sent' });
+
+//     } catch (err) {
+//         console.error('Error:', err);
+//         res.status(500).json({ message: 'Internal server error' });
+//     }
+// };
+// const resetpassword = async (req, res) => {
+//     const { token, newPassword } = req.body;
+
+//     try {
+//         const hashedToken = crypto.createHash('sha256').update(token).digest('hex');
+
+//         const user = await User.findOne({
+//             where: {
+//                 resetToken: hashedToken,
+//                 resetTokenExpiry: { [Op.gt]: new Date() }
+//             }
+//         });
+
+//         if (!user) {
+//             return res.status(400).json({ message: 'Invalid or expired token' });
+//         }
+
+//         // Hash new password before saving
+//         const hashedPassword = await bcrypt.hash(newPassword, 10);
+//         await user.update({ 
+//             password: hashedPassword, 
+//             resetToken: null, 
+//             resetTokenExpiry: null 
+//         });
+
+//         res.json({ message: 'Password reset successful' });
+
+//     } catch (err) {
+//         console.error('Error:', err);
+//         res.status(500).json({ message: 'Internal server error' });
+//     }
+// };
 
 // Register Student
 const registerStudent = async (req, res) => {
@@ -113,9 +194,12 @@ const loginAlumni = async (req, res) => {
   }
 };
 
+
 module.exports = {
   registerStudent,
   registerAlumni,
   loginStudent,
   loginAlumni,
+  // resetpassword,
+  // forgot
 };
