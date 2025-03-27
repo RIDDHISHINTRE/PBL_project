@@ -81,7 +81,7 @@ const loginStudent = async (req, res) => {
       return res.status(400).json({ error: 'Invalid credentials' });
     }
     
-    console.log("Before Signing JWT:", { id: student.id, userType: "student" });
+
     const token = jwt.sign({ id: student.id , userType: String("student") }, process.env.JWT_SECRET, { expiresIn: '1h' });
     // localStorage.setItem("token", token);
     res.status(200).json({ message: 'Login successful', token ,id: student.id ,userType: String("student") });

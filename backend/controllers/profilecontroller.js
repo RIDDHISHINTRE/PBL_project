@@ -2,6 +2,41 @@ const bcrypt = require('bcryptjs');
 const  Student =require('../models/studentModel');
 const { Alumni, WorkExperience } = require("../models/asso");
 
+
+const deleteWorkExperience = async (req, res) => {
+  try {
+    const { deleteWorkExperienceIds } = req.body;
+    const { id } = req.params; // Alumni ID from URL
+    const loggedInAlumniId = req.user.id; // Extracted from token
+
+    if (!deleteWorkExperienceIds || !Array.isArray(deleteWorkExperienceIds) || deleteWorkExperienceIds.length === 0) {
+      return res.status(400).json({ message: "Invalid deleteWorkExperienceIds. Must be a non-empty array." });
+    }
+
+    // Ensure alumni can only delete their own work experience
+    if (parseInt(id) !== loggedInAlumniId) {
+      return res.status(403).json({ message: "Unauthorized to delete work experience of another user" });
+    }
+
+    const deletedCount = await WorkExperience.destroy({
+      where: {
+        id: deleteWorkExperienceIds,
+        alumniId: id, // Ensures only the given alumni's work experiences are deleted
+      },
+    });
+
+    if (deletedCount > 0) {
+      return res.status(200).json({ message: "Work experience deleted successfully" });
+    } else {
+      return res.status(404).json({ message: "No matching WorkExperience records found for deletion." });
+    }
+  } catch (error) {
+    console.error("Error deleting work experience:", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+
 const updateStudentProfile = async (req, res) => {
   try {
     const { id } = req.params;
@@ -41,7 +76,7 @@ const updateStudentProfile = async (req, res) => {
 const updateAlumniProfile = async (req, res) => {
   try {
     const { id } = req.params;
-    const { name, bio, password, collegeid, branch, graduateCollegeYear, workExperience } = req.body;
+    const { name, bio, password, collegeid, branch, graduateCollegeYear, WorkExperiences } = req.body;
 
     console.log("Updating Alumni Profile for ID:", id);
 
@@ -69,8 +104,8 @@ const updateAlumniProfile = async (req, res) => {
     console.log("Alumni Profile Updated:", alumni);
 
     // Handle WorkExperience Updates
-    if (Array.isArray(workExperience)) {
-      for (const exp of workExperience) {
+    if (Array.isArray(WorkExperiences)) {
+      for (const exp of WorkExperiences) {
         const { id: expId, companyName, role, yearsOfExperience } = exp;
 
         if (!companyName || !role || !yearsOfExperience) {
@@ -117,5 +152,6 @@ const updateAlumniProfile = async (req, res) => {
 
 module.exports = {
   updateStudentProfile,
-  updateAlumniProfile
+  updateAlumniProfile,
+  deleteWorkExperience
 };

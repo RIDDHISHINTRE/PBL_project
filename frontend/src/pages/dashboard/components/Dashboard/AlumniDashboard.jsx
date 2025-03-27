@@ -59,9 +59,6 @@ const AlumniDashboard = () => {
             <Link to="/jobs/alumni" className="text-blue-500 hover:underline">
               View All Jobs →
             </Link>
-            <Link to="/post-job" className="bg-blue-500 text-white px-4 py-2 rounded-md shadow-md hover:bg-blue-600">
-              + Post a Job
-            </Link>
           </div>
         </div>
       </div>
